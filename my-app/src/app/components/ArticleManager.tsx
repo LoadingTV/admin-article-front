@@ -1,4 +1,5 @@
 // components/ArticleManager.tsx
+"use client";
 import { useState, useEffect } from "react";
 
 const ArticleManager: React.FC = () => {
