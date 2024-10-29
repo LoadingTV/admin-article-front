@@ -1,23 +1,25 @@
-// src/app/components/Sidebar.tsx
 "use client"; // Убедитесь, что это первая строка
 
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation"; // Импортируем usePathname
 import { FaBars, FaTimes } from "react-icons/fa";
+import Image from "next/image"; // Импортируем Image из next/image
 
-// Список услуг
 const services = [
-  { name: "Spray Foam Insulation", path: "/" },
-  { name: "Spray Foam Roofing System", path: "/" },
-  { name: "Closed-Cell Insulation", path: "/" },
-  { name: "Fiberglass Insulation", path: "/" },
-  { name: "Blown-In Insulation", path: "/" },
-  { name: "Soundproofing Insulation", path: "/" },
-  { name: "Insulation Removal", path: "/" },
-  { name: "Concrete Leveling", path: "/" },
-  { name: "Polyurea Coating", path: "/" },
-  { name: "About Us", path: "/" },
+  { name: "Spray Foam Insulation", path: "/spray-foam-insulation" },
+  { name: "Spray Foam Roofing System", path: "/spray-polyurethane-foam" },
+  { name: "Closed-Cell Insulation", path: "/closed-cell-insulation" },
+  { name: "Fiberglass Insulation", path: "/fiberglass-insulation" },
+  { name: "Blown-In Insulation", path: "/blown-insulation" },
+  {
+    name: "Soundproofing Insulation",
+    path: "/sound-insulation-by-spraying-foaming-polymers",
+  },
+  { name: "Insulation Removal", path: "/foam-insulation-removal" },
+  { name: "Concrete Leveling", path: "/concrete-leveling" },
+  { name: "Polyurea Coating", path: "/polyurea-coating" },
+  { name: "About Us", path: "/about-us" },
 ];
 
 const Sidebar: React.FC = () => {
@@ -32,6 +34,10 @@ const Sidebar: React.FC = () => {
   const linkHover = isBlogPage ? "hover:bg-gray-700" : "hover:bg-gray-200";
   const activeLink = isBlogPage ? "bg-gray-700" : "bg-gray-100";
 
+  const callPhoneNumber = () => {
+    window.location.href = "tel:8555665340";
+  };
+
   return (
     <>
       {/* Кнопка для переключения мобильного меню */}
@@ -44,12 +50,27 @@ const Sidebar: React.FC = () => {
 
       {/* Сайдбар */}
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-[300px] p-6 ${sidebarBg} z-50 transition-transform transform ${
+        className={`fixed lg:static top-0 left-0 h-screen w-[300px] p-6 ${sidebarBg} z-50 transition-transform transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:block`}
       >
         <div className="flex items-center mb-8">
-          <span className="text-xl font-semibold">USA Spray Me</span>
+          <Link href="https://usasprayme.com">
+            <Image
+              src="/images/icons/logo_vector_outline.svg"
+              alt="UsaSprayMe Logo"
+              width={100}
+              height={100}
+            />
+          </Link>
+          <div className="ml-auto cursor-pointer" onClick={callPhoneNumber}>
+            <Image
+              src="/images/icons/phone-black.svg"
+              alt="Phone Icon"
+              width={32}
+              height={32}
+            />
+          </div>
         </div>
 
         <nav>
@@ -85,6 +106,69 @@ const Sidebar: React.FC = () => {
             </span>
           </Link>
         </nav>
+        {/* Социальные иконки */}
+        <div className="mt-4 flex space-x-4">
+          <a
+            href="https://www.facebook.com/profile.php?id=100063656786704&mibextid=LQQJ4d"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/icons/facebook-black-orange.svg"
+              alt="Facebook"
+              width={24}
+              height={24}
+            />
+          </a>
+          <a
+            href="https://www.yelp.com/biz/usa-spray-me-san-francisco?uid=VmTM6BGkDSCxDJvSYdRVAA&utm_source=ishare"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/icons/yelp-black-orange.svg"
+              alt="Yelp"
+              width={24}
+              height={24}
+            />
+          </a>
+          <a
+            href="https://www.instagram.com/usasprayme/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/icons/instagram-black-orange.svg"
+              alt="Instagram"
+              width={24}
+              height={24}
+            />
+          </a>
+          <a
+            href="https://www.youtube.com/@UsaSprayme"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/icons/youtube-black-orange.svg"
+              alt="YouTube"
+              width={24}
+              height={24}
+            />
+          </a>
+          <a
+            href="https://www.google.com/search?q=usasprayme"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/icons/google-black-orange.svg"
+              alt="Google"
+              width={24}
+              height={24}
+            />
+          </a>
+        </div>
 
         <div className="mt-8">
           {/* Контакты */}
