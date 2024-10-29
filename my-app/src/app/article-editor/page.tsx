@@ -1,14 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { EditorState, convertToRaw } from "draft-js";
-import draftToHtml from "draftjs-to-html";
-
-// Импортируем редактор динамически, чтобы избежать ошибок SSR
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  { ssr: false }
-);
+import "quill/dist/quill.snow.css"; // или quill.bubble.css для другого стиля
+import Quill from "quill";
+import "quill-table"; // Импортируем плагин для таблиц
 
 // Интерфейс для данных статьи
 interface ArticleData {
@@ -27,21 +22,43 @@ const ArticleEditor: React.FC = () => {
     images: [],
     link: "",
   });
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const editorRef = useRef<Quill | null>(null); // Ссылка на экземпляр Quill
+
+  useEffect(() => {
+    const quill = new Quill("#editor", {
+      theme: "snow",
+      modules: {
+        toolbar: [
+          ["bold", "italic", "underline"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          ["link", "image", "table"],
+        ],
+      },
+    });
+
+    editorRef.current = quill;
+
+    // Отслеживаем изменения в редакторе
+    quill.on("text-change", () => {
+      const html = quill.root.innerHTML;
+      setArticleData((prev) => ({ ...prev, text: html }));
+    });
+
+    // Очистка редактора при размонтировании компонента
+    return () => {
+      editorRef.current = null; // Обнуляем реф
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const contentState = editorState.getCurrentContent();
-    const rawContent = convertToRaw(contentState);
-    const htmlContent = draftToHtml(rawContent);
-
     const formData = new FormData();
     formData.append("title", articleData.title);
     formData.append("metaDescription", articleData.metaDescription);
-    formData.append("text", htmlContent);
+    formData.append("text", articleData.text);
     formData.append("link", articleData.link);
 
     articleData.images.forEach((image) => {
@@ -63,7 +80,9 @@ const ArticleEditor: React.FC = () => {
           images: [],
           link: "",
         });
-        setEditorState(EditorState.createEmpty());
+        if (editorRef.current) {
+          editorRef.current.setContents([]); // Очищаем редактор
+        }
       } else {
         const errorData = await response.json();
         alert(
@@ -106,7 +125,7 @@ const ArticleEditor: React.FC = () => {
               onChange={(e) =>
                 setArticleData((prev) => ({ ...prev, title: e.target.value }))
               }
-              className="w-full text-black  p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+              className="w-full text-black p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
               required
             />
           </div>
@@ -129,34 +148,15 @@ const ArticleEditor: React.FC = () => {
           </div>
 
           <div>
-            <label className="block mb-2 text-lg font-semibold  ">
+            <label className="block mb-2 text-lg font-semibold text-black">
               Текст статьи:
             </label>
-            <Editor
-              editorState={editorState}
-              onEditorStateChange={setEditorState}
-              wrapperClassName="border border-gray-300 rounded-lg  "
-              editorClassName="p-2 min-h-[200px] focus:outline-none text-black flex"
-              toolbar={{
-                options: ["inline", "blockType", "list", "link"],
-                inline: {
-                  options: ["bold", "italic", "underline"],
-                },
-                blockType: {
-                  inDropdown: true,
-                },
-                list: {
-                  inDropdown: true,
-                },
-                link: {
-                  popupClassName: "my-popup-classname",
-                },
-              }}
-            />
+            <div id="editor" className="h-64 text-black"></div>{" "}
+            {/* Здесь будет Quill */}
           </div>
 
           <div>
-            <label className="block mb-2 text-lg font-semibold">
+            <label className="block mb-2 text-lg font-semibold text-black">
               Изображения:
             </label>
             <input
