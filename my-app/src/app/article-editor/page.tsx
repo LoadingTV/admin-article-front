@@ -1,29 +1,32 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import "quill/dist/quill.snow.css"; // или quill.bubble.css для другого стиля
+import "quill/dist/quill.snow.css";
 import Quill from "quill";
-import "quill-table"; // Импортируем плагин для таблиц
 
 // Интерфейс для данных статьи
 interface ArticleData {
   title: string;
   metaDescription: string;
+  keyPoints: string;
   text: string;
+  slug: string;
+  authorId: number;
   images: File[];
-  link: string;
 }
 
 const ArticleEditor: React.FC = () => {
   const [articleData, setArticleData] = useState<ArticleData>({
     title: "",
     metaDescription: "",
+    keyPoints: "",
     text: "",
+    slug: "",
+    authorId: 1,
     images: [],
-    link: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const editorRef = useRef<Quill | null>(null); // Ссылка на экземпляр Quill
+  const editorRef = useRef<Quill | null>(null);
 
   useEffect(() => {
     const quill = new Quill("#editor", {
@@ -32,7 +35,7 @@ const ArticleEditor: React.FC = () => {
         toolbar: [
           ["bold", "italic", "underline"],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["link", "image", "table"],
+          ["link", "image"],
         ],
       },
     });
@@ -55,41 +58,48 @@ const ArticleEditor: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const formData = new FormData();
-    formData.append("title", articleData.title);
-    formData.append("metaDescription", articleData.metaDescription);
-    formData.append("text", articleData.text);
-    formData.append("link", articleData.link);
-
-    articleData.images.forEach((image) => {
-      formData.append("images", image);
-    });
+    // Подготовка данных для отправки
+    const formData = {
+      title: articleData.title,
+      keyPoints: articleData.keyPoints,
+      slug: articleData.slug,
+      content: articleData.text,
+      metaDescription: articleData.metaDescription,
+      authorId: articleData.authorId,
+      files: [],
+    };
 
     try {
       const response = await fetch("http://localhost:3001/api/articles", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        alert("Статья успешно создана!");
-        setArticleData({
-          title: "",
-          metaDescription: "",
-          text: "",
-          images: [],
-          link: "",
-        });
-        if (editorRef.current) {
-          editorRef.current.setContents([]); // Очищаем редактор
-        }
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
+        console.error("Server Error:", errorData);
         alert(
           `Ошибка: ${
             errorData.message || "Произошла ошибка при создании статьи"
           }`
         );
+      } else {
+        alert("Статья успешно создана!");
+        setArticleData({
+          title: "",
+          metaDescription: "",
+          keyPoints: "",
+          text: "",
+          slug: "",
+          authorId: 1,
+          images: [],
+        });
+        if (editorRef.current) {
+          editorRef.current.setContents([]); // Очищаем редактор
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -132,6 +142,23 @@ const ArticleEditor: React.FC = () => {
 
           <div>
             <label className="block mb-2 text-lg font-semibold text-black">
+              Ключевые моменты:
+            </label>
+            <textarea
+              value={articleData.keyPoints}
+              onChange={(e) =>
+                setArticleData((prev) => ({
+                  ...prev,
+                  keyPoints: e.target.value,
+                }))
+              }
+              className="text-black w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-lg font-semibold text-black">
               Meta Description:
             </label>
             <textarea
@@ -151,8 +178,7 @@ const ArticleEditor: React.FC = () => {
             <label className="block mb-2 text-lg font-semibold text-black">
               Текст статьи:
             </label>
-            <div id="editor" className="h-64 text-black"></div>{" "}
-            {/* Здесь будет Quill */}
+            <div id="editor" className="h-64 text-black"></div>
           </div>
 
           <div>
@@ -165,21 +191,21 @@ const ArticleEditor: React.FC = () => {
               onChange={handleImageChange}
               className="text-black w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
               accept="image/*"
-              required
             />
           </div>
 
           <div>
             <label className="block mb-2 text-lg font-semibold text-black">
-              Ссылка:
+              Slug:
             </label>
             <input
-              type="url"
-              value={articleData.link}
+              type="text"
+              value={articleData.slug}
               onChange={(e) =>
-                setArticleData((prev) => ({ ...prev, link: e.target.value }))
+                setArticleData((prev) => ({ ...prev, slug: e.target.value }))
               }
               className="text-black w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+              required
             />
           </div>
 
