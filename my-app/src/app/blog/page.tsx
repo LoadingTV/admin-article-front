@@ -1,98 +1,74 @@
-// types.ts
-type BlogPost = {
-  id: string;
+"use client";
+import React, { useEffect, useState } from "react";
+
+interface Image {
+  image_id: number;
+  url: string;
+  alt_text: string;
+}
+
+interface Article {
+  article_id: number;
   title: string;
-  imageUrl: string;
-  keyPoints: string[];
+  keyPoints: string;
   slug: string;
+  images: Image[];
+}
+
+const BlogArticles: React.FC = () => {
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3001/api/articles/latest"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data: Article[] = await response.json();
+        setArticles(data);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+      {articles.map((article) => (
+        <div
+          key={article.article_id}
+          className="border rounded-lg overflow-hidden shadow-lg"
+        >
+          {article.images.length > 0 && (
+            <img
+              src={article.images[0].url}
+              alt={article.images[0].alt_text}
+              className="w-full h-48 object-cover"
+            />
+          )}
+          <div className="p-4">
+            <h3 className="text-lg font-semibold">{article.title}</h3>
+            <ul className="list-disc list-inside mb-2">
+              {article.keyPoints.split(",").map((point, index) => (
+                <li key={index}>{point.trim()}</li>
+              ))}
+            </ul>
+            <a
+              href={`/article/${article.slug}`} // Предполагается, что у вас есть роут для деталей статьи
+              className="text-blue-500 hover:underline"
+            >
+              Learn More
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-
-async function getBlogPosts(): Promise<BlogPost[]> {
-  const response = await fetch("http://localhost:3001/blog");
-  if (!response.ok) {
-    throw new Error("Failed to fetch blog posts");
-  }
-  return await response.json();
-}
-
-export default async function BlogPage() {
-  try {
-    const posts = await getBlogPosts();
-
-    return (
-      <div className="min-h-screen bg-white">
-        {/* Hero Banner */}
-        <div className="relative h-[400px] w-full">
-          <div className="absolute inset-0 bg-black/50">
-            <div className="flex flex-col items-center justify-center h-full text-white">
-              <div className="mb-4">
-                <Image
-                  src="/images/icons/blog_icon.svg"
-                  alt="Blog"
-                  width={64}
-                  height={64}
-                />
-              </div>
-              <h1 className="text-5xl font-semibold mb-4">The Blog</h1>
-              <h2 className="text-xl text-center">
-                We Provide A Variety Of Spray Polyurethane Foam Solutions
-              </h2>
-            </div>
-          </div>
-        </div>
-
-        {/* Blog Posts Grid */}
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post) => (
-              <div
-                key={post.id}
-                className="flex flex-col bg-white rounded-lg overflow-hidden shadow-lg"
-              >
-                {/* Image Container */}
-                <div className="relative h-64">
-                  <Image
-                    src={post.imageUrl}
-                    alt={post.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-6">
-                    <h3 className="text-white text-2xl font-semibold text-center">
-                      {post.title}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 flex-1 flex flex-col">
-                  <ul className="list-disc ml-6 mb-6 flex-1">
-                    {post.keyPoints.map((point, index) => (
-                      <li key={index} className="text-gray-600 mb-2">
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="inline-flex justify-center items-center px-6 py-2 bg-transparent border-2 border-blue-500 text-blue-500 font-medium rounded-full hover:bg-blue-50 transition-colors"
-                  >
-                    LEARN MORE
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  } catch (error) {
-    const message = (error as Error).message;
-    return <div>Error loading blog posts: {message}</div>;
-  }
-}
+export default BlogArticles;

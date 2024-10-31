@@ -22,10 +22,10 @@ interface Article {
   created_at: string;
   updated_at: string;
   meta_description: string;
-  author_id: number; // Добавьте author_id, если нужно
+  author_id: number;
   author: Author;
-  images: Image[]; // Массив изображений
-  content: string; // HTML-содержимое
+  images: Image[];
+  content: string;
 }
 
 async function fetchArticles(): Promise<Article[]> {
@@ -76,10 +76,12 @@ export default async function ArticlePage({
 
           <div className="main">
             <div className="go-back-article flex items-center mb-4">
-              <img
-                src="../images/icons/arrow-article.svg"
+              <Image
+                src="/images/icons/arrow-article.svg"
                 alt="arrow"
                 className="mr-2"
+                width={24}
+                height={24}
               />
               <a
                 href="https://usasprayme.com/blog"

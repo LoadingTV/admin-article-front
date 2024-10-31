@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image"; // Импортируем компонент Image
 
-interface Image {
+interface ImageData {
   image_id: number;
   url: string;
   caption: string;
@@ -21,7 +22,7 @@ interface Article {
     name: string;
     email: string;
   };
-  images: Image[]; // Здесь указано, что у статьи могут быть изображения
+  images: ImageData[]; // Здесь указано, что у статьи могут быть изображения
   content: string;
 }
 
@@ -77,14 +78,12 @@ const ArticleDetail: React.FC = () => {
           <strong>Images:</strong>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {article.images.map((image) => (
-              <div key={image.image_id} className="relative">
-                <img
-                  src={image.url}
-                  alt={image.alt_text}
-                  className="object-cover w-full h-48 rounded-md"
-                />
-                {image.caption && <p className="text-sm">{image.caption}</p>}
-              </div>
+              <ImageWithPlaceholder
+                key={image.image_id}
+                src={image.url}
+                alt={image.alt_text}
+                caption={image.caption}
+              />
             ))}
           </div>
         </div>
@@ -108,6 +107,29 @@ const ArticleDetail: React.FC = () => {
           ))}
         </ul>
       </div>
+    </div>
+  );
+};
+
+const ImageWithPlaceholder: React.FC<{
+  src: string;
+  alt: string;
+  caption?: string;
+}> = ({ src, alt, caption }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const placeholder = "/path/to/placeholder.jpg";
+
+  return (
+    <div className="relative">
+      <Image
+        src={isLoading ? placeholder : src}
+        alt={alt}
+        className="object-cover w-full h-48 rounded-md"
+        width={400}
+        height={300}
+        onLoadingComplete={() => setIsLoading(false)}
+      />
+      {caption && <p className="text-sm">{caption}</p>}
     </div>
   );
 };
