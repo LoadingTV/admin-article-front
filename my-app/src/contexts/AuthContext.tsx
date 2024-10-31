@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const token = localStorage.getItem("token");
       if (token) {
         console.log("Токен найден, отправка запроса на проверку..."); // Логируем наличие токена
-        const response = await fetch("http://localhost:3000/api/auth/me", {
+        const response = await fetch("http://localhost:3001/api/auth/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {
@@ -73,11 +73,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         Authorization: `Bearer ${token}`,
       };
     }
-    console.log(`Отправка запроса на ${url} с параметрами:`, options); // Логируем запрос
+    console.log(`Отправка запроса на ${url} с параметрами:`, options);
     const response = await fetch(url, options);
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Ошибка запроса:", errorData.message || "Request failed"); // Логируем ошибку запроса
+      console.error("Ошибка запроса:", errorData.message || "Request failed");
       throw new Error(errorData.message || "Request failed");
     }
     return response;
@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const login = async (email: string, password: string) => {
     console.log("Попытка входа с email:", email); // Логируем начало процесса входа
-    const response = await fetch("http://localhost:3000/api/auth/login", {
+    const response = await fetch("http://localhost:3001/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -93,22 +93,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Ошибка входа:", errorData.message || "Login failed"); // Логируем ошибку
+      console.error("Ошибка входа:", errorData.message || "Login failed");
       throw new Error(errorData.message || "Login failed");
     }
 
     const { user: userData, token } = await response.json();
-    console.log("Успешный вход. Данные пользователя:", userData); // Логируем данные пользователя
+    console.log("Успешный вход. Данные пользователя:", userData);
     localStorage.setItem("token", token);
     setUser(userData);
   };
 
   const register = async (userData: RegisterData) => {
+    // Убедитесь, что данные, которые вы передаете, соответствуют нужному формату
+    const { name, surname, email, password } = userData; // Извлечение необходимых полей
     console.log("Попытка регистрации с данными:", userData);
-    const response = await fetch("http://localhost:3000/api/auth/register", {
+    const response = await fetch("http://localhost:3001/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData),
+      body: JSON.stringify({ name, surname, email, password }), // Форматируем тело запроса
     });
 
     if (!response.ok) {
