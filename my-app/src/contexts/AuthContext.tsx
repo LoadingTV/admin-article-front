@@ -12,15 +12,15 @@ interface AuthContextType {
 }
 
 interface RegisterData {
-  firstName: string;
-  lastName: string;
+  name: string;
+  surname: string;
   email: string;
   password: string;
 }
 
 interface UpdateProfileData {
-  firstName?: string;
-  lastName?: string;
+  name?: string;
+  surname?: string;
   email?: string;
   password?: string;
 }

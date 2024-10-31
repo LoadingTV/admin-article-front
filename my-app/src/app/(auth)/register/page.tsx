@@ -3,15 +3,15 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
+import Input from "@/components/UI/Input";
+import Button from "@/components/UI/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface RegisterFormData {
-  firstName: string;
-  lastName: string;
+  name: string;
+  surename: string;
   email: string;
   password: string;
 }
@@ -49,15 +49,15 @@ export default function RegisterPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <Input
             label="Имя"
-            name="firstName"
+            name="name"
             register={register}
-            error={errors.firstName?.message}
+            error={errors.name?.message}
           />
           <Input
             label="Фамилия"
-            name="lastName"
+            name="surname"
             register={register}
-            error={errors.lastName?.message}
+            error={errors.surname?.message}
           />
           <Input
             label="Email"
