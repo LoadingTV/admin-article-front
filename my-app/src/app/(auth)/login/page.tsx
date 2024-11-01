@@ -2,7 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import {
+  RegisterOptions,
+  useForm,
+  UseFormRegisterReturn,
+} from "react-hook-form";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -46,27 +50,29 @@ export default function LoginPage() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <Input
-            label="Email"
-            type="email"
-            {...register("email", {
+            register={register("email", {
               required: "Обязательное поле",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: "Неверный формат email",
               },
             })}
+            label="Email"
+            type="email"
+            name="email" // Добавлено свойство name
             error={errors.email?.message}
           />
           <Input
-            label="Пароль"
-            type="password"
-            {...register("password", {
+            register={register("password", {
               required: "Обязательное поле",
               minLength: {
                 value: 8,
                 message: "Пароль должен содержать минимум 8 символов",
               },
             })}
+            label="Пароль"
+            type="password"
+            name="password" // Добавлено свойство name
             error={errors.password?.message}
           />
           <Button type="submit" loading={loading}>

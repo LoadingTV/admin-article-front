@@ -59,23 +59,23 @@ const ArticleEditor: React.FC = () => {
     setIsSubmitting(true);
 
     // Подготовка данных для отправки
-    const formData = {
-      title: articleData.title,
-      keyPoints: articleData.keyPoints,
-      slug: articleData.slug,
-      content: articleData.text,
-      metaDescription: articleData.metaDescription,
-      authorId: articleData.authorId,
-      files: [],
-    };
+    const formData = new FormData();
+    formData.append("title", articleData.title);
+    formData.append("keyPoints", articleData.keyPoints);
+    formData.append("slug", articleData.slug);
+    formData.append("content", articleData.text);
+    formData.append("metaDescription", articleData.metaDescription);
+    formData.append("authorId", String(articleData.authorId));
+
+    // Добавляем изображения в FormData
+    articleData.images.forEach((image) => {
+      formData.append("files", image);
+    });
 
     try {
       const response = await fetch("http://localhost:3001/api/articles", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formData, // Используем FormData для отправки
       });
 
       if (!response.ok) {
@@ -110,10 +110,11 @@ const ArticleEditor: React.FC = () => {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    const files = e.target.files;
+    if (files) {
       setArticleData((prev) => ({
         ...prev,
-        images: Array.from(e.target.files || []),
+        images: Array.from(files),
       }));
     }
   };
