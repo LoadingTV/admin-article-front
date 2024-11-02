@@ -109,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const register = async (userData: RegisterData) => {
     const { name, surname, email, password } = userData;
     console.log("Попытка регистрации с данными:", userData);
-    const response = await fetch("http://localhost:3001/users", {
+    const response = await fetch("http://localhost:3001/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, surname, email, password }),
