@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface Author {
@@ -39,93 +40,85 @@ async function fetchArticles(): Promise<Article[]> {
   return data;
 }
 
-export default async function ArticlePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const articles = await fetchArticles();
-  const article = articles.find((art) => art.slug === params.slug);
+export default function ArticlePage({ params }: { params: { slug: string } }) {
+  const [article, setArticle] = useState<Article | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      setLoading(true);
+      try {
+        const articles = await fetchArticles();
+        const foundArticle = articles.find((art) => art.slug === params.slug);
+        setArticle(foundArticle || null);
+      } catch (error) {
+        console.error("Error fetching article:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticle();
+  }, [params.slug]);
+
+  if (loading) return <p>Loading...</p>;
+
+  if (!article) return <p>Article not found.</p>;
 
   return (
     <div className="main-content">
-      {article ? (
-        <>
-          <div className="relative w-full h-96">
-            {/* Баннер на всю ширину */}
-            {article.images.length > 0 ? (
-              <Image
-                src={article.images[0].url} // Используем первое изображение из массива
-                alt={article.images[0].alt_text || article.title} // Альтернативный текст
-                layout="fill"
-                objectFit="cover"
-                className="absolute inset-0 object-cover"
-              />
-            ) : (
-              <div className="h-full bg-gray-200 flex items-center justify-center">
-                <p>No image available.</p>
-              </div>
-            )}
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="text-center text-white p-4">
-                <div className="article__banner-divider mb-2 border-b border-gray-400"></div>
-                <h1 className="text-3xl font-bold">{article.title}</h1>
-              </div>
-            </div>
+      <div className="relative w-full h-96">
+        {article.images.length > 0 ? (
+          <Image
+            src={article.images[0].url}
+            alt={article.images[0].alt_text || article.title}
+            layout="fill"
+            objectFit="cover"
+            className="absolute inset-0 object-cover"
+          />
+        ) : (
+          <div className="h-full bg-gray-200 flex items-center justify-center">
+            <p>No image available.</p>
           </div>
-
-          <div className="main">
-            <div className="go-back-article flex items-center mb-4">
-              <Image
-                src="/images/icons/arrow-article.svg"
-                alt="arrow"
-                className="mr-2"
-                width={24}
-                height={24}
-              />
-              <a
-                href="https://usasprayme.com/blog"
-                className="text-blue-500 hover:underline"
-              >
-                Back to Blog
-              </a>
-            </div>
-            <div className="main__article">
-              <h1 className="text-2xl font-bold mb-2">{article.title}</h1>
-              <p className="text-gray-500 mb-4">
-                {new Date(article.created_at).toLocaleString()}
-              </p>
-
-              <h3 className="text-xl font-semibold mb-2">
-                <strong>Key Takeaways</strong>
-              </h3>
-              <ul className="list-disc list-inside mb-4">
-                {article.keyPoints ? (
-                  article.keyPoints.split(",").map((takeaway, index) => (
-                    <li key={index} className="mb-1">
-                      {takeaway.trim()}
-                    </li>
-                  ))
-                ) : (
-                  <li>No key takeaways available.</li>
-                )}
-              </ul>
-
-              <div>
-                <h3 className="text-xl font-semibold mb-2">
-                  <strong>Content</strong>
-                </h3>
-                <div
-                  dangerouslySetInnerHTML={{ __html: article.content }}
-                  className="mb-2"
-                />
-              </div>
-            </div>
+        )}
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="text-center text-white p-4">
+            <h1 className="text-3xl font-bold">{article.title}</h1>
           </div>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
+        </div>
+      </div>
+
+      <div className="main">
+        <h1 className="text-2xl font-bold mb-2">{article.title}</h1>
+        <p className="text-gray-500 mb-4">
+          {new Date(article.created_at).toLocaleString()}
+        </p>
+
+        <h3 className="text-xl font-semibold mb-2">
+          <strong>Key Takeaways</strong>
+        </h3>
+        <ul className="list-disc list-inside mb-4">
+          {article.keyPoints ? (
+            article.keyPoints.split(",").map((takeaway, index) => (
+              <li key={index} className="mb-1">
+                {takeaway.trim()}
+              </li>
+            ))
+          ) : (
+            <li>No key takeaways available.</li>
+          )}
+        </ul>
+
+        <div>
+          <h3 className="text-xl font-semibold mb-2">
+            <strong>Content</strong>
+          </h3>
+          <div
+            dangerouslySetInnerHTML={{ __html: article.content }}
+            className="mb-2"
+          />
+        </div>
+      </div>
     </div>
   );
 }
