@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
+import Image from "next/image";
 interface Image {
   image_id: number;
   url: string;
@@ -45,10 +45,12 @@ const BlogArticles: React.FC = () => {
           className="border rounded-lg overflow-hidden shadow-lg"
         >
           {article.images.length > 0 && (
-            <img
+            <Image
               src={article.images[0].url}
               alt={article.images[0].alt_text}
-              className="w-full h-48 object-cover"
+              width={500}
+              height={200}
+              className="object-cover"
             />
           )}
           <div className="p-4">
@@ -59,7 +61,7 @@ const BlogArticles: React.FC = () => {
               ))}
             </ul>
             <a
-              href={`/article/${article.slug}`} // Предполагается, что у вас есть роут для деталей статьи
+              href={`/article/${article.slug}`}
               className="text-blue-500 hover:underline"
             >
               Learn More

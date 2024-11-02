@@ -1,10 +1,9 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-import "quill/dist/quill.snow.css";
-import Quill from "quill";
+import React, { useState, useEffect } from "react";
+import { Editor } from "@tinymce/tinymce-react";
 
-// Интерфейс для данных статьи
+const apiKey = process.env.NEXT_PUBLIC_TINY_MCE_API_KEY;
+
 interface ArticleData {
   title: string;
   metaDescription: string;
@@ -26,39 +25,16 @@ const ArticleEditor: React.FC = () => {
     images: [],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const editorRef = useRef<Quill | null>(null);
 
-  useEffect(() => {
-    const quill = new Quill("#editor", {
-      theme: "snow",
-      modules: {
-        toolbar: [
-          ["bold", "italic", "underline"],
-          [{ list: "ordered" }, { list: "bullet" }],
-          ["link", "image"],
-        ],
-      },
-    });
-
-    editorRef.current = quill;
-
-    // Отслеживаем изменения в редакторе
-    quill.on("text-change", () => {
-      const html = quill.root.innerHTML;
-      setArticleData((prev) => ({ ...prev, text: html }));
-    });
-
-    // Очистка редактора при размонтировании компонента
-    return () => {
-      editorRef.current = null; // Обнуляем реф
-    };
-  }, []);
+  const handleEditorChange = (content: string) => {
+    setArticleData((prev) => ({ ...prev, text: content }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    console.log("Form Submission Started");
 
-    // Подготовка данных для отправки
     const formData = new FormData();
     formData.append("title", articleData.title);
     formData.append("keyPoints", articleData.keyPoints);
@@ -67,7 +43,6 @@ const ArticleEditor: React.FC = () => {
     formData.append("metaDescription", articleData.metaDescription);
     formData.append("authorId", String(articleData.authorId));
 
-    // Добавляем изображения в FormData
     articleData.images.forEach((image) => {
       formData.append("files", image);
     });
@@ -75,7 +50,7 @@ const ArticleEditor: React.FC = () => {
     try {
       const response = await fetch("http://localhost:3001/api/articles", {
         method: "POST",
-        body: formData, // Используем FormData для отправки
+        body: formData,
       });
 
       if (!response.ok) {
@@ -88,6 +63,8 @@ const ArticleEditor: React.FC = () => {
         );
       } else {
         alert("Статья успешно создана!");
+        console.log("Article successfully created.");
+        // Resetting the form data
         setArticleData({
           title: "",
           metaDescription: "",
@@ -97,25 +74,31 @@ const ArticleEditor: React.FC = () => {
           authorId: 1,
           images: [],
         });
-        if (editorRef.current) {
-          editorRef.current.setContents([]); // Очищаем редактор
-        }
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Произошла ошибка при отправке данных");
     } finally {
       setIsSubmitting(false);
+      console.log("Form Submission Ended");
     }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files) {
+    if (files && files.length > 0) {
+      const selectedFiles = Array.from(files);
       setArticleData((prev) => ({
         ...prev,
-        images: Array.from(files),
+        images: selectedFiles,
       }));
+      console.log("Selected Images:", selectedFiles);
+    } else {
+      setArticleData((prev) => ({
+        ...prev,
+        images: [],
+      }));
+      console.log("No images selected.");
     }
   };
 
@@ -179,7 +162,40 @@ const ArticleEditor: React.FC = () => {
             <label className="block mb-2 text-lg font-semibold text-black">
               Текст статьи:
             </label>
-            <div id="editor" className="h-64 text-black"></div>
+            <Editor
+              apiKey={apiKey}
+              init={{
+                height: 500,
+                menubar: "favs file edit view insert format tools table help",
+                plugins: [
+                  "advlist",
+                  "autolink",
+                  "link",
+                  "image",
+                  "lists",
+                  "charmap",
+                  "preview",
+                  "anchor",
+                  "pagebreak",
+                  "searchreplace",
+                  "wordcount",
+                  "visualblocks",
+                  "visualchars",
+                  "code",
+                  "fullscreen",
+                  "insertdatetime",
+                  "media",
+                  "table",
+                  "emoticons",
+                  "help",
+                ],
+                toolbar:
+                  "undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | " +
+                  "bullist numlist outdent indent | link image | print preview media fullscreen | " +
+                  "forecolor backcolor emoticons | help",
+              }}
+              onEditorChange={handleEditorChange}
+            />
           </div>
 
           <div>
