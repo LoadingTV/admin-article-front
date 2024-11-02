@@ -101,6 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const { user: userData, token } = await response.json();
+    console.log("Полученный токен:", token);
     console.log("Успешный вход. Данные пользователя:", userData);
     localStorage.setItem("token", token);
     setUser(userData);
@@ -125,20 +126,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const { user: newUser, token } = await response.json();
-    console.log("Регистрация успешна. Данные нового пользователя:", newUser); // Логируем данные нового пользователя
+    console.log("Регистрация успешна. Данные нового пользователя:", newUser);
     localStorage.setItem("token", token);
     setUser(newUser);
   };
 
   const logout = async () => {
-    console.log("Выход из системы..."); // Логируем начало выхода
+    console.log("Выход из системы...");
     localStorage.removeItem("token");
     setUser(null);
-    console.log("Выход успешен."); // Логируем успешный выход
+    console.log("Выход успешен.");
   };
 
   const updateProfile = async (userData: UpdateProfileData) => {
-    console.log("Обновление профиля с данными:", userData); // Логируем данные для обновления профиля
+    console.log("Обновление профиля с данными:", userData);
     const response = await fetchWithAuth(
       "http://localhost:3000/api/users/profile",
       {
@@ -149,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     const updatedUser = await response.json();
-    console.log("Профиль успешно обновлен. Данные пользователя:", updatedUser); // Логируем обновленные данные пользователя
+    console.log("Профиль успешно обновлен. Данные пользователя:", updatedUser);
     setUser(updatedUser);
   };
 
