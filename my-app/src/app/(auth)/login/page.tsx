@@ -16,6 +16,7 @@ import Link from "next/link";
 interface LoginFormData {
   email: string;
   password: string;
+  access_token: string;
 }
 
 export default function LoginPage() {

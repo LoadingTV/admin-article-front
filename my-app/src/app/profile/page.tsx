@@ -14,34 +14,26 @@ const ProfilePage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(true); // Для отслеживания загрузки данных
 
   useEffect(() => {
-    console.log("Fetching articles...");
     fetchArticles();
   }, []);
 
-  useEffect(() => {
-    console.log("User data:", user);
-  }, [user]);
-
   const fetchArticles = async () => {
+    setLoading(true); // Устанавливаем состояние загрузки
     try {
       const response = await fetch("http://localhost:3001/api/articles");
       const text = await response.text();
 
-      // Проверка на пустой ответ
       if (!text) {
         console.error("Received empty response");
-        setArticles([]); // Обновляем состояние для пустого ответа
+        setArticles([]);
         setFilteredArticles([]);
         return;
       }
 
-      console.log("Response Text:", text);
-
-      // Пробуем распарсить текст как JSON
       const data = JSON.parse(text);
-
       if (Array.isArray(data)) {
         setArticles(data);
         setFilteredArticles(data);
@@ -54,6 +46,8 @@ const ProfilePage: React.FC = () => {
       console.error("Error loading articles:", error);
       setArticles([]);
       setFilteredArticles([]);
+    } finally {
+      setLoading(false); // Устанавливаем состояние загрузки в false после завершения
     }
   };
 
@@ -64,19 +58,19 @@ const ProfilePage: React.FC = () => {
         ? articles
         : articles.filter((article) => article.status === status)
     );
-    console.log("Filter changed:", status); // Log the current filter status
   };
 
   const handleLogout = async () => {
     await logout();
-    console.log("User logged out"); // Log logout action
     window.location.href = "/login";
   };
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">User Profile</h1>
-      {user && (
+      {loading ? (
+        <p>Loading user data...</p> // Сообщение о загрузке данных пользователя
+      ) : user ? (
         <>
           <p className="text-lg mb-2">
             <span className="font-semibold">Name:</span> {user.name}
@@ -88,7 +82,8 @@ const ProfilePage: React.FC = () => {
             <span className="font-semibold">Email:</span> {user.email}
           </p>
           <p className="text-lg mb-6">
-            <span className="font-semibold">Role:</span> {user.role.role_name}
+            <span className="font-semibold">Role:</span>{" "}
+            {user.role?.role_name || "No role assigned"}
           </p>
           <button
             onClick={handleLogout}
@@ -97,6 +92,8 @@ const ProfilePage: React.FC = () => {
             Logout
           </button>
         </>
+      ) : (
+        <p>No user data found.</p> // Обработка случая, когда пользователь не найден
       )}
 
       <h2 className="text-2xl font-semibold mt-8 mb-4">Projects</h2>

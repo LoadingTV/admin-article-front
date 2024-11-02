@@ -40,16 +40,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const checkAuth = async () => {
     try {
       console.log("Проверка аутентификации...");
-      const token = localStorage.getItem("token");
-      if (token) {
+      const access_token = localStorage.getItem("access_token");
+      if (access_token) {
         console.log("Токен найден, отправка запроса на проверку...");
         const response = await fetch("http://localhost:3001/api/auth/me", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: { Authorization: `Bearer ${access_token}` },
         });
         if (response.ok) {
           const userData = await response.json();
           console.log("Данные пользователя получены:", userData);
-          setUser(userData);
+          setUser(userData.user); // Извлекаем только объект пользователя
         } else {
           console.error(
             "Ошибка проверки аутентификации:",
@@ -70,22 +70,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const fetchWithAuth = async (url: string, options: RequestInit) => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
       options.headers = {
         ...options.headers,
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${access_token}`,
       };
     }
     console.log(`Отправка запроса на ${url} с параметрами:`, options);
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Ошибка запроса:", errorData.message || "Request failed");
-      throw new Error(errorData.message || "Request failed");
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Ошибка запроса:", errorData.message || "Request failed");
+        throw new Error(errorData.message || "Request failed");
+      }
+      return response;
+    } catch (error) {
+      console.error("Ошибка при выполнении запроса:", error);
+      throw error;
     }
-    return response;
   };
+
   const login = async (email: string, password: string) => {
     console.log("Попытка входа с email:", email);
     const response = await fetch("http://localhost:3001/api/auth/login", {
@@ -100,11 +106,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error(errorData.message || "Login failed");
     }
 
-    const { user: userData, token } = await response.json();
-    console.log("Полученный токен:", token);
-    console.log("Успешный вход. Данные пользователя:", userData);
-    localStorage.setItem("token", token);
-    setUser(userData);
+    const { accessToken, user: loggedInUser } = await response.json(); // Изменено: Извлекаем user как loggedInUser
+    console.log("Полученный токен:", accessToken.access_token);
+    localStorage.setItem("access_token", accessToken.access_token);
+    setUser(loggedInUser); // Обновляем состояние пользователя
   };
 
   const register = async (userData: RegisterData) => {
@@ -125,15 +130,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error(errorData.message || "Registration failed");
     }
 
-    const { user: newUser, token } = await response.json();
+    const { user: newUser, access_token } = await response.json();
     console.log("Регистрация успешна. Данные нового пользователя:", newUser);
-    localStorage.setItem("token", token);
+    localStorage.setItem("access_token", access_token);
     setUser(newUser);
   };
 
   const logout = async () => {
     console.log("Выход из системы...");
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     setUser(null);
     console.log("Выход успешен.");
   };
@@ -141,7 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateProfile = async (userData: UpdateProfileData) => {
     console.log("Обновление профиля с данными:", userData);
     const response = await fetchWithAuth(
-      "http://localhost:3000/api/users/profile",
+      "http://localhost:3001/api/users/profile",
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
