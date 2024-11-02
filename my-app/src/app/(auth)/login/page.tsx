@@ -35,6 +35,10 @@ export default function LoginPage() {
       router.push("/profile");
     } catch (error) {
       console.error(error);
+      alert(
+        "Ошибка входа: " +
+          (error instanceof Error ? error.message : "Неизвестная ошибка")
+      );
     } finally {
       setLoading(false);
     }
@@ -59,7 +63,7 @@ export default function LoginPage() {
             })}
             label="Email"
             type="email"
-            name="email" // Добавлено свойство name
+            name="name"
             error={errors.email?.message}
           />
           <Input
@@ -83,7 +87,7 @@ export default function LoginPage() {
               href="/register"
               className="text-blue-600 hover:text-blue-700"
             >
-              Нет аккаунта? Зарегистрироваться
+              New to Loading? Create an account
             </Link>
           </div>
         </form>

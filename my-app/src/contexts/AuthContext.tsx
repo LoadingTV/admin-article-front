@@ -39,29 +39,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const checkAuth = async () => {
     try {
-      console.log("Проверка аутентификации..."); // Логируем начало проверки
+      console.log("Проверка аутентификации...");
       const token = localStorage.getItem("token");
       if (token) {
-        console.log("Токен найден, отправка запроса на проверку..."); // Логируем наличие токена
+        console.log("Токен найден, отправка запроса на проверку...");
         const response = await fetch("http://localhost:3001/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         if (response.ok) {
           const userData = await response.json();
-          console.log("Данные пользователя получены:", userData); // Логируем данные пользователя
+          console.log("Данные пользователя получены:", userData);
           setUser(userData);
         } else {
-          console.error("Ошибка проверки аутентификации:", response.statusText); // Логируем ошибку
+          console.error(
+            "Ошибка проверки аутентификации:",
+            response.statusText,
+            response.status
+          );
           throw new Error("Authentication check failed");
         }
       } else {
-        console.warn("Токен не найден."); // Логируем отсутствие токена
+        console.warn("Токен не найден.");
       }
     } catch (error) {
-      console.error("Ошибка при проверке аутентификации:", error); // Логируем ошибку
+      console.error("Ошибка при проверке аутентификации:", error);
     } finally {
       setLoading(false);
-      console.log("Проверка аутентификации завершена."); // Логируем завершение проверки
+      console.log("Проверка аутентификации завершена.");
     }
   };
 
@@ -82,9 +86,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     return response;
   };
-
   const login = async (email: string, password: string) => {
-    console.log("Попытка входа с email:", email); // Логируем начало процесса входа
+    console.log("Попытка входа с email:", email);
     const response = await fetch("http://localhost:3001/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -104,13 +107,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const register = async (userData: RegisterData) => {
-    // Убедитесь, что данные, которые вы передаете, соответствуют нужному формату
-    const { name, surname, email, password } = userData; // Извлечение необходимых полей
+    const { name, surname, email, password } = userData;
     console.log("Попытка регистрации с данными:", userData);
     const response = await fetch("http://localhost:3001/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, surname, email, password }), // Форматируем тело запроса
+      body: JSON.stringify({ name, surname, email, password }),
     });
 
     if (!response.ok) {
@@ -118,7 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error(
         "Ошибка регистрации:",
         errorData.message || "Registration failed"
-      ); // Логируем ошибку
+      );
       throw new Error(errorData.message || "Registration failed");
     }
 

@@ -1,8 +1,7 @@
-// src/app/(auth)/register/page.tsx
 "use client";
 
 import { useState } from "react";
-import { useForm, RegisterOptions } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,8 +10,10 @@ import Link from "next/link";
 
 interface RegisterFormData {
   name: string;
+  surname: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 export default function RegisterPage() {
@@ -24,6 +25,7 @@ export default function RegisterPage() {
     register: formRegister,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<RegisterFormData>();
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -32,9 +34,9 @@ export default function RegisterPage() {
 
       await register({
         name: data.name,
+        surname: data.surname,
         email: data.email,
         password: data.password,
-        surname: "",
       });
       router.push("/profile");
     } catch (error) {
@@ -49,24 +51,32 @@ export default function RegisterPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Зарегистрироваться
+            Register
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <Input
             register={formRegister("name", {
-              required: "Обязательное поле",
+              required: "Required field",
             })}
-            label="Имя"
+            label="Name"
             name="name"
             error={errors.name?.message}
           />
           <Input
+            register={formRegister("surname", {
+              required: "Required field",
+            })}
+            label="Surname"
+            name="surname"
+            error={errors.surname?.message}
+          />
+          <Input
             register={formRegister("email", {
-              required: "Обязательное поле",
+              required: "Required field",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Неверный формат email",
+                message: "Invalid email format",
               },
             })}
             label="Email"
@@ -75,23 +85,34 @@ export default function RegisterPage() {
           />
           <Input
             register={formRegister("password", {
-              required: "Обязательное поле",
+              required: "Required field",
               minLength: {
                 value: 8,
-                message: "Пароль должен содержать минимум 8 символов",
+                message: "Password must be at least 8 characters long",
               },
             })}
-            label="Пароль"
+            label="Password"
             type="password"
             name="password"
             error={errors.password?.message}
           />
+          <Input
+            register={formRegister("confirmPassword", {
+              required: "Required field",
+              validate: (value) =>
+                value === watch("password") || "Passwords do not match",
+            })}
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            error={errors.confirmPassword?.message}
+          />
           <Button type="submit" loading={loading}>
-            Зарегистрироваться
+            Register
           </Button>
           <div className="text-center mt-4">
             <Link href="/login" className="text-blue-600 hover:text-blue-700">
-              Есть аккаунт? Войти
+              Already have an account? Log in
             </Link>
           </div>
         </form>
