@@ -74,7 +74,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             alt={article.images[0].alt_text || article.title}
             layout="fill"
             objectFit="cover"
-            className="absolute inset-0 object-cover"
+            className="absolute w-full inset-0 object-cover"
           />
         ) : (
           <div className="h-full bg-gray-200 flex items-center justify-center">
