@@ -40,7 +40,6 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      {/* Кнопка для переключения мобильного меню */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="lg:hidden p-4 text-xl focus:outline-none"
@@ -50,7 +49,7 @@ const Sidebar: React.FC = () => {
 
       {/* Сайдбар */}
       <aside
-        className={`fixed lg:static top-0 left-0 h-screen w-[300px] p-6 ${sidebarBg} z-50 transition-transform transform ${
+        className={` fixed top-0 left-0 bg-white z-50 shadow-md h-full w-[300px] p-6 bg-gray-800 z-50 ${sidebarBg} z-50 transition-transform transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:block`}
       >
@@ -73,11 +72,11 @@ const Sidebar: React.FC = () => {
           </div>
         </div>
 
-        <nav>
+        <nav className="">
           {services.map((service) => (
             <Link href={service.path} key={service.name}>
               <span
-                className={`block px-4 py-2 rounded-lg mb-2 ${
+                className={`block px-4 py-2 rounded-lg mb-2 text-black${
                   pathname === service.path ? activeLink : ""
                 } ${linkHover}`}
               >
@@ -88,7 +87,7 @@ const Sidebar: React.FC = () => {
 
           <Link href="/blog">
             <span
-              className={`block px-4 py-2 rounded-lg mb-2 ${
+              className={`block px-4 py-2 rounded-lg mb-2 text-black${
                 pathname === "/blog" ? activeLink : ""
               } ${linkHover}`}
             >
@@ -98,7 +97,7 @@ const Sidebar: React.FC = () => {
 
           <Link href="/faq">
             <span
-              className={`block px-4 py-2 rounded-lg mb-2 ${
+              className={`block px-4 py-2 rounded-lg mb-2 text-black${
                 pathname === "/faq" ? activeLink : ""
               } ${linkHover}`}
             >

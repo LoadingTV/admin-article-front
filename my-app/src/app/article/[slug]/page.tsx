@@ -66,7 +66,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   if (!article) return <p>Article not found.</p>;
 
   return (
-    <div className="main-content">
+    <div className="flex flex-col justify-center items-start mt-12 mb-12 w-2/3">
       <div className="relative w-full h-96">
         {article.images.length > 0 ? (
           <Image
@@ -83,13 +83,13 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         )}
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="text-center text-white p-4">
-            <h1 className="text-3xl font-bold">{article.title}</h1>
+            <h1 className="text-3xl font-semibold">{article.title}</h1>
           </div>
         </div>
       </div>
 
       <div className="main">
-        <h1 className="text-2xl font-bold mb-2">{article.title}</h1>
+        <h1 className="text-4xl font-semibold mb-2">{article.title}</h1>
         <p className="text-gray-500 mb-4">
           {new Date(article.created_at).toLocaleString()}
         </p>

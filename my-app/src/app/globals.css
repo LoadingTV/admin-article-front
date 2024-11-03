@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Outfit";
+  src: url("/my-app//public/fonts/Outfit/Outfit-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/my-app//public/fonts/Outfit/Outfit-Regular.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -22,6 +36,22 @@
   }
 }
 
-main {
-  width: calc(100% - 300px);
+body {
+  font-family: "Outfit", sans-serif;
+}
+
+p {
+  font-size: 16px;
+  line-height: 25px;
+  margin: 10px 0 15px;
+  color: #909090;
+}
+a {
+  color: #f9b000;
+}
+li {
+  font-size: 16px;
+  line-height: 25px;
+  margin: 10px 0 15px;
+  color: #909090;
 }

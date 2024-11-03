@@ -1,11 +1,10 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+
 import "./globals.css";
 import Sidebar from "../components/Sidebar";
 import { AuthProvider } from "@/contexts/AuthContext";
-
-const inter = Inter({ subsets: ["latin"] });
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,12 +15,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthProvider>
       <html lang="en">
-        {" "}
-        <body className={inter.className}>
-          {" "}
+        <head>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+            rel="stylesheet"
+          />
+        </head>
+        <body>
           <div className="flex">
             <Sidebar />
-            <main className="">{children}</main>
+            <main className=" ml-0 lg:ml-[300px] flex flex-col items-center   ">
+              {children}
+            </main>
+            {/* <Footer /> */}
           </div>
         </body>
       </html>
