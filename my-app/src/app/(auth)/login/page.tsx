@@ -11,6 +11,7 @@ import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 
 interface LoginFormData {
@@ -67,6 +68,7 @@ export default function LoginPage() {
             name="name"
             error={errors.email?.message}
           />
+
           <Input
             register={register("password", {
               required: "Обязательное поле",

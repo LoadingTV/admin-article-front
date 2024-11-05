@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (response.ok) {
           const userData = await response.json();
           console.log("Данные пользователя получены:", userData);
-          setUser(userData.user); // Извлекаем только объект пользователя
+          setUser(userData.user);
         } else {
           console.error(
             "Ошибка проверки аутентификации:",
@@ -106,10 +106,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error(errorData.message || "Login failed");
     }
 
-    const { accessToken, user: loggedInUser } = await response.json(); // Изменено: Извлекаем user как loggedInUser
+    const { accessToken, user: loggedInUser } = await response.json();
     console.log("Полученный токен:", accessToken.access_token);
     localStorage.setItem("access_token", accessToken.access_token);
-    setUser(loggedInUser); // Обновляем состояние пользователя
+    setUser(loggedInUser);
   };
 
   const register = async (userData: RegisterData) => {
