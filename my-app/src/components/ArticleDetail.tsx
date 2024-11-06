@@ -35,7 +35,7 @@ const ArticleDetail: React.FC = () => {
     const fetchArticle = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/articles/${articleId}`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/articles/${articleId}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");

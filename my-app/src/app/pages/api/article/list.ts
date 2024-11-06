@@ -7,7 +7,9 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
-      const response = await fetch(`${process.env.NEST_API_URL}/article/list`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/article/list`
+      );
 
       if (!response.ok) {
         return res

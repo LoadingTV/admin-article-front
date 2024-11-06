@@ -22,7 +22,7 @@ const BlogArticles: React.FC = () => {
     const fetchArticles = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/articles/latest"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/articles/latest`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");

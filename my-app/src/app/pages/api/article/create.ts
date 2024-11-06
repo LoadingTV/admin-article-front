@@ -8,7 +8,7 @@ export default async function handler(
   if (req.method === "POST") {
     try {
       const response = await fetch(
-        `${process.env.NEST_API_URL}/article/create`,
+        `${process.env.NEXT_PUBLIC_API_URL}/article/create`,
         {
           method: "POST",
         }

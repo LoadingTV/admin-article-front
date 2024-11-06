@@ -30,7 +30,9 @@ interface Article {
 }
 
 async function fetchArticles(): Promise<Article[]> {
-  const response = await fetch(`http://localhost:3001/api/articles`);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
+  );
 
   if (!response.ok) {
     throw new Error("Network response was not ok");

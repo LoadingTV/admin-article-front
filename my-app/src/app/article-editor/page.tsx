@@ -70,10 +70,13 @@ const ArticleEditor: React.FC = () => {
     console.log("Form Data Before Submission:", Array.from(formData.entries()));
 
     try {
-      const response = await fetch("http://localhost:3001/api/articles", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/articles`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

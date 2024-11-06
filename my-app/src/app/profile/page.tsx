@@ -23,7 +23,9 @@ const ProfilePage: React.FC = () => {
   const fetchArticles = async () => {
     setLoading(true); // Устанавливаем состояние загрузки
     try {
-      const response = await fetch("http://localhost:3001/api/articles");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
+      );
       const text = await response.text();
 
       if (!text) {
