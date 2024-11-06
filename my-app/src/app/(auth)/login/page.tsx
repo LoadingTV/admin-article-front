@@ -77,9 +77,9 @@ export default function LoginPage() {
                 message: "Пароль должен содержать минимум 8 символов",
               },
             })}
-            label="Пароль"
+            label="Password"
             type="password"
-            name="password" // Добавлено свойство name
+            name="password"
             error={errors.password?.message}
           />
           <Button type="submit" loading={loading}>
