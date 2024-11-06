@@ -60,7 +60,7 @@ export default function LoginPage() {
               required: "Обязательное поле",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Неверный формат email",
+                message: "Wrong email",
               },
             })}
             label="Email"
