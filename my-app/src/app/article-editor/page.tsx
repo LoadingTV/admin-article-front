@@ -60,7 +60,6 @@ const ArticleEditor: React.FC = () => {
       formData.append(`faqs[${index}][answer]`, faq.answer);
     });
 
-    // Добавление изображений
     if (articleData.images && articleData.images.length > 0) {
       articleData.images.forEach((image) => {
         formData.append("images", image);
@@ -89,7 +88,7 @@ const ArticleEditor: React.FC = () => {
       } else {
         setSuccessMessage("Статья успешно создана!");
         console.log("Article successfully created.");
-        // Сброс формы
+
         setArticleData({
           title: "",
           metaDescription: "",
