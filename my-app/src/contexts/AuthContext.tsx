@@ -97,25 +97,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const login = async (email: string, password: string) => {
     console.log("Попытка входа с email:", email);
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Ошибка входа:", errorData.message || "Login failed");
+        throw new Error(errorData.message || "Login failed");
       }
-    );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Ошибка входа:", errorData.message || "Login failed");
-      throw new Error(errorData.message || "Login failed");
+      const { accessToken, user: loggedInUser } = await response.json();
+      console.log("Полученный токен:", accessToken.access_token);
+      localStorage.setItem("access_token", accessToken.access_token);
+      setUser(loggedInUser);
+    } catch (error) {
+      console.error("Ошибка при попытке входа:", error);
+      throw error;
     }
-
-    const { accessToken, user: loggedInUser } = await response.json();
-    console.log("Полученный токен:", accessToken.access_token);
-    localStorage.setItem("access_token", accessToken.access_token);
-    setUser(loggedInUser);
   };
 
   const register = async (userData: RegisterData) => {
