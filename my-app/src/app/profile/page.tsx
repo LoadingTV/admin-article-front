@@ -14,7 +14,7 @@ const ProfilePage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [filter, setFilter] = useState("all");
-  const [loading, setLoading] = useState(true); // Для отслеживания загрузки данных
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchArticles();
@@ -49,7 +49,7 @@ const ProfilePage: React.FC = () => {
       setArticles([]);
       setFilteredArticles([]);
     } finally {
-      setLoading(false); // Устанавливаем состояние загрузки в false после завершения
+      setLoading(false);
     }
   };
 
@@ -71,7 +71,7 @@ const ProfilePage: React.FC = () => {
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">User Profile</h1>
       {loading ? (
-        <p>Loading user data...</p> // Сообщение о загрузке данных пользователя
+        <p>Loading user data...</p>
       ) : user ? (
         <>
           <p className="text-lg mb-2">

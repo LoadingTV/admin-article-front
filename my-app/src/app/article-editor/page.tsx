@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 
-import { GetServerSideProps } from "next";
+import { Editor } from "@tinymce/tinymce-react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+
 const apiKey = process.env.NEXT_PUBLIC_TINY_MCE_API_KEY;
 
 interface Faq {
@@ -16,22 +17,46 @@ interface ArticleData {
   keyPoints: string;
   text: string;
   slug: string;
-  authorId: number;
+  authorId: number | null;
   images: File[];
   faqs: Faq[];
 }
 
 const ArticleEditor: React.FC = () => {
+  const { user } = useAuth();
+
   const [articleData, setArticleData] = useState<ArticleData>({
     title: "",
     metaDescription: "",
     keyPoints: "",
     text: "",
     slug: "",
-    authorId: 1,
+    authorId: user ? user.user_id : null,
     images: [],
     faqs: [],
   });
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+          {
+            credentials: "include",
+          }
+        );
+        const data = await response.json();
+        if (data?.id) {
+          setArticleData((prev) => ({ ...prev, authorId: data.id }));
+        }
+      } catch (error) {
+        console.error("Ошибка получения пользователя:", error);
+      }
+    };
+    fetchUser();
+  }, [user]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -52,7 +77,7 @@ const ArticleEditor: React.FC = () => {
     formData.append("metaDescription", articleData.metaDescription);
     formData.append("keyPoints", articleData.keyPoints);
     formData.append("content", articleData.text);
-    formData.append("authorId", articleData.authorId.toString());
+    formData.append("authorId", articleData.authorId?.toString() ?? "");
 
     // Добавление FAQ в форму
     articleData.faqs.forEach((faq, index) => {
@@ -60,7 +85,7 @@ const ArticleEditor: React.FC = () => {
       formData.append(`faqs[${index}][answer]`, faq.answer);
     });
 
-    if (articleData.images && articleData.images.length > 0) {
+    if (articleData.images.length > 0) {
       articleData.images.forEach((image) => {
         formData.append("images", image);
       });
@@ -79,7 +104,6 @@ const ArticleEditor: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Server Error:", errorData);
         setErrorMessage(
           `Ошибка: ${
             errorData.message || "Произошла ошибка при создании статьи"
@@ -88,14 +112,13 @@ const ArticleEditor: React.FC = () => {
       } else {
         setSuccessMessage("Статья успешно создана!");
         console.log("Article successfully created.");
-
         setArticleData({
           title: "",
           metaDescription: "",
           keyPoints: "",
           text: "",
           slug: "",
-          authorId: 1,
+          authorId: user ? user.user_id : null,
           images: [],
           faqs: [],
         });
@@ -111,12 +134,11 @@ const ArticleEditor: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const selectedFiles = Array.from(files);
       setArticleData((prev) => ({
         ...prev,
-        images: selectedFiles,
+        images: Array.from(files),
       }));
-      console.log("Selected Images:", selectedFiles);
+      console.log("Selected Images:", Array.from(files));
     } else {
       setArticleData((prev) => ({
         ...prev,
@@ -138,9 +160,11 @@ const ArticleEditor: React.FC = () => {
     field: "question" | "answer",
     value: string
   ) => {
-    const newFaqs = [...articleData.faqs];
-    newFaqs[index] = { ...newFaqs[index], [field]: value };
-    setArticleData((prev) => ({ ...prev, faqs: newFaqs }));
+    setArticleData((prev) => {
+      const updatedFaqs = [...prev.faqs];
+      updatedFaqs[index] = { ...updatedFaqs[index], [field]: value };
+      return { ...prev, faqs: updatedFaqs };
+    });
   };
 
   const handleRemoveFaq = (index: number) => {
