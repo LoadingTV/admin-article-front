@@ -16,6 +16,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <AuthProvider>
       <html lang="en">
         <head>
+          qq
           <link
             href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
             rel="stylesheet"
