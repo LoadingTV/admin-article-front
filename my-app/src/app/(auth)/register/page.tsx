@@ -18,7 +18,7 @@ interface RegisterFormData {
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const router = useRouter();
 
   const {
@@ -38,6 +38,7 @@ export default function RegisterPage() {
         email: data.email,
         password: data.password,
       });
+      await login(data.email, data.password);
       router.push("/profile");
     } catch (error) {
       console.error(error);
