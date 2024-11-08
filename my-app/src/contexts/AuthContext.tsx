@@ -145,7 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const { user: newUser, access_token } = await response.json();
-    console.log("Регистрация успешна. Данные нового пользователя:", newUser);
+    console.log("Register success!  Данные нового пользователя:", newUser);
     localStorage.setItem("access_token", access_token);
     setUser(newUser);
   };
