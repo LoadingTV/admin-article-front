@@ -168,13 +168,15 @@ const ProfilePage: React.FC = () => {
         ))}
       </ul>
 
-      <div className="mt-8">
-        <Link href="/article-editor" legacyBehavior>
-          <a className="inline-block bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-600 transition">
-            Create New Article
-          </a>
-        </Link>
-      </div>
+      {user?.role?.role_name !== "user" && user?.role?.role_name !== "default_user" && (
+        <div className="mt-8">
+          <Link href="/article-editor" legacyBehavior>
+            <a className="inline-block bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-600 transition">
+              Create New Article
+            </a>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
