@@ -169,7 +169,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     const updatedUser = await response.json();
-    console.log("Профиль успешно обновлен. Данные пользователя:", updatedUser);
+    console.log("Профильуспешно обновлен. Данные пользователя:", updatedUser);
     setUser(updatedUser);
   };
 
