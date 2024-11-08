@@ -24,9 +24,8 @@ const services = [
 
 const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname(); // Получаем текущий путь
+  const pathname = usePathname();
 
-  // Определяем стиль сайдбара в зависимости от текущей страницы
   const isBlogPage = pathname.startsWith("/blog");
   const sidebarBg = isBlogPage
     ? "bg-gray-800 text-white"
@@ -40,6 +39,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
+      {/* Toggle button for mobile */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="lg:hidden p-4 text-xl focus:outline-none"
@@ -53,7 +53,13 @@ const Sidebar: React.FC = () => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:block`}
       >
-        <div className="flex items-center mb-8">
+        <div className="flex items-center mb-8 lg:justify-center">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="lg:hidden p-4 text-xl focus:outline-none"
+          >
+            {isOpen ? <FaTimes /> : <FaBars />}
+          </button>
           <Link href="https://usasprayme.com">
             <Image
               src="/images/icons/logo_vector_outline.svg"
@@ -62,7 +68,10 @@ const Sidebar: React.FC = () => {
               height={100}
             />
           </Link>
-          <div className="ml-auto cursor-pointer" onClick={callPhoneNumber}>
+          <div
+            className="ml cursor-pointer lg:hidden"
+            onClick={callPhoneNumber}
+          >
             <Image
               src="/images/icons/phone-black.svg"
               alt="Phone Icon"
