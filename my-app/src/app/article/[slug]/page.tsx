@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router"; // Для обработки параметров URL
+import { useRouter } from "next/router";
 
 interface Author {
   user_id: number;
@@ -44,11 +44,11 @@ async function fetchArticles(): Promise<Article[]> {
 export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); // Для получения параметров URL
+  const router = useRouter();
   const { slug } = router.query; // Получаем значение параметра "slug"
 
   useEffect(() => {
-    if (!slug) return; // Ожидаем, что slug будет доступен
+    if (!slug) return; // Ожидаем, пока slug не станет доступен
 
     const fetchArticle = async () => {
       setLoading(true);
@@ -77,11 +77,9 @@ export default function ArticlePage() {
             <Image
               src={article.images[0].url}
               alt={article.images[0].alt_text || article.title}
-              layout="fill"
-              objectFit="cover"
-              className="absolute w-full inset-0 object-cover"
               width={500}
               height={300}
+              className="absolute w-full inset-0 object-cover"
             />
           ) : (
             <div className="h-full bg-gray-200 flex items-center justify-center">
