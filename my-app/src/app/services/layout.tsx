@@ -7,7 +7,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div>
+    <div className="w-full">
       <div className="banner banner-img_spray-foam-insulation">
         <div className="text-overlay">
           <h1 className="banner-service-h1 center">Spray Foam Insulation</h1>
@@ -29,7 +29,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
         </div>
-        {/* Render children */}
       </div>
       <div>{children}</div>
     </div>

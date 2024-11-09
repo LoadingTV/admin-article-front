@@ -10,7 +10,7 @@ const services = [
   { name: "Spray Foam Insulation", path: "/services/spray-foam-insulation" },
   {
     name: "Spray Foam Roofing System",
-    path: "/services/spray-polyurethane-foam",
+    path: "/services/spray-foam-roofing-system",
   },
   { name: "Closed-Cell Insulation", path: "/services/closed-cell-insulation" },
   { name: "Fiberglass Insulation", path: "/services/fiberglass-insulation" },
