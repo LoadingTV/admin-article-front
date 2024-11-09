@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router"; // Для обработки параметров URL
 
 interface Author {
   user_id: number;
@@ -29,47 +30,44 @@ interface Article {
   content: string;
 }
 
-async function fetchArticleBySlug(slug: string): Promise<Article | null> {
+async function fetchArticles(): Promise<Article[]> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/articles?slug=${slug}`
+    `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
   );
-
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
-
   const data = await response.json();
-  return data.length > 0 ? data[0] : null; // Ensure data is returned as an array and find article by slug
+  return data;
 }
 
-export default function ArticlePage({ params }: { params: { slug: string } }) {
+export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); // Для получения параметров URL
+  const { slug } = router.query; // Получаем значение параметра "slug"
 
   useEffect(() => {
+    if (!slug) return; // Ожидаем, что slug будет доступен
+
     const fetchArticle = async () => {
       setLoading(true);
-      setError(null); // Reset error message on new fetch attempt
       try {
-        const fetchedArticle = await fetchArticleBySlug(params.slug);
-        setArticle(fetchedArticle);
+        const articles = await fetchArticles();
+        const foundArticle = articles.find((art) => art.slug === slug);
+        setArticle(foundArticle || null);
       } catch (error) {
-        console.error("Error fetching article:", error);
-        setError("An error occurred while fetching the article.");
+        console.error("Ошибка при загрузке статьи:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchArticle();
-  }, [params.slug]);
+  }, [slug]);
 
-  if (loading) return <p>Loading...</p>;
-
-  if (error) return <p>{error}</p>;
-
-  if (!article) return <p>Article not found.</p>;
+  if (loading) return <p>Загрузка...</p>;
+  if (!article) return <p>Статья не найдена.</p>;
 
   return (
     <div className="w-full">
@@ -82,10 +80,12 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               layout="fill"
               objectFit="cover"
               className="absolute w-full inset-0 object-cover"
+              width={500}
+              height={300}
             />
           ) : (
             <div className="h-full bg-gray-200 flex items-center justify-center">
-              <p>No image available.</p>
+              <p>Изображение отсутствует.</p>
             </div>
           )}
           <div className="text-center text-white p-4">
@@ -101,7 +101,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
           </p>
 
           <h3 className="text-xl font-semibold mb-2">
-            <strong>Key Takeaways</strong>
+            <strong>Основные моменты</strong>
           </h3>
           <ul className="list-disc list-inside mb-4">
             {article.keyPoints ? (
@@ -111,13 +111,13 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                 </li>
               ))
             ) : (
-              <li>No key takeaways available.</li>
+              <li>Основные моменты не указаны.</li>
             )}
           </ul>
 
           <div>
             <h3 className="text-xl font-semibold mb-2">
-              <strong>Content</strong>
+              <strong>Контент</strong>
             </h3>
             <div
               dangerouslySetInnerHTML={{ __html: article.content }}
