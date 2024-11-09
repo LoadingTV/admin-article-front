@@ -40,13 +40,45 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* Toggle button for mobile */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
+      {/* <button
+    
         className="lg:hidden p-4 text-xl focus:outline-none"
       >
         {isOpen ? <FaTimes /> : <FaBars />}
-      </button>
+      </button> */}
+      <div className="side-mobi ">
+        <div className="side-fix">
+          <div className="side-header">
+            <div className="side-burger" onClick={() => setIsOpen(!isOpen)}>
+              <div className="line"></div>
+              <div className="line"></div>
+              <div className="line"></div>
+            </div>
 
+            <div className="side-logo">
+              <Link href="/">
+                <Image
+                  src="/images/icons/logo.svg"
+                  alt="UsaSprayMe Logo"
+                  width={300}
+                  height={300}
+                />
+              </Link>
+            </div>
+
+            <div className="side-phone">
+              <a href="tel:8555665340" aria-label="Call Us">
+                <Image
+                  src="/images/icons/phone-black.svg"
+                  alt="Phone Icon"
+                  width={32}
+                  height={32}
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Сайдбар */}
       <aside
         className={` fixed top-0 left-0 bg-white z-50 shadow-md h-full w-[300px] p-6 bg-gray-800 z-50 ${sidebarBg} z-50 transition-transform transform ${
@@ -54,20 +86,22 @@ const Sidebar: React.FC = () => {
         } lg:translate-x-0 lg:block`}
       >
         <div className="flex items-center mb-8 lg:justify-center">
-          <button
+          {/* <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-4 text-xl focus:outline-none"
           >
             {isOpen ? <FaTimes /> : <FaBars />}
-          </button>
-          <Link href="https://usasprayme.com">
-            <Image
-              src="/images/icons/logo_vector_outline.svg"
-              alt="UsaSprayMe Logo"
-              width={100}
-              height={100}
-            />
-          </Link>
+          </button> */}
+          <div className="side-logo">
+            <Link href="/">
+              <Image
+                src="/images/icons/logo_vector_outline.svg"
+                alt="UsaSprayMe Logo"
+                width={300}
+                height={300}
+              />
+            </Link>
+          </div>
           <div
             className="ml cursor-pointer lg:hidden"
             onClick={callPhoneNumber}

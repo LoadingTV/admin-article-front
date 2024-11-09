@@ -69,7 +69,6 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="w-full">
-      {" "}
       <div className="relative w-full h-96">
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
           {article.images.length > 0 ? (

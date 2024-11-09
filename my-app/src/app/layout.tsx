@@ -15,19 +15,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthProvider>
       <html lang="en">
-        <head>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
-            rel="stylesheet"
-          />
-        </head>
+        <head></head>
         <body>
           <div className="flex">
             <Sidebar />
-            <main className=" ml-0 lg:ml-[300px] flex flex-col items-center   ">
+            <main className="w-full ml-0 lg:ml-[300px] flex flex-col items-center   ">
               {children}
+              <Footer />
             </main>
-            {/* <Footer /> */}
           </div>
         </body>
       </html>
