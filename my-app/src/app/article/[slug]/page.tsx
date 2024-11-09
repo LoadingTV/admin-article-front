@@ -29,9 +29,9 @@ interface Article {
   content: string;
 }
 
-async function fetchArticles(): Promise<Article[]> {
+async function fetchArticleBySlug(slug: string): Promise<Article | null> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
+    `${process.env.NEXT_PUBLIC_API_URL}/api/articles?slug=${slug}`
   );
 
   if (!response.ok) {
@@ -39,22 +39,24 @@ async function fetchArticles(): Promise<Article[]> {
   }
 
   const data = await response.json();
-  return data;
+  return data.length > 0 ? data[0] : null; // Ensure data is returned as an array and find article by slug
 }
 
 export default function ArticlePage({ params }: { params: { slug: string } }) {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchArticle = async () => {
       setLoading(true);
+      setError(null); // Reset error message on new fetch attempt
       try {
-        const articles = await fetchArticles();
-        const foundArticle = articles.find((art) => art.slug === params.slug);
-        setArticle(foundArticle || null);
+        const fetchedArticle = await fetchArticleBySlug(params.slug);
+        setArticle(fetchedArticle);
       } catch (error) {
         console.error("Error fetching article:", error);
+        setError("An error occurred while fetching the article.");
       } finally {
         setLoading(false);
       }
@@ -64,6 +66,8 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   }, [params.slug]);
 
   if (loading) return <p>Loading...</p>;
+
+  if (error) return <p>{error}</p>;
 
   if (!article) return <p>Article not found.</p>;
 
