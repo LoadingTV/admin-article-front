@@ -1,0 +1,45 @@
+{
+  "spray-foam": {
+    "metaTitle": "Spray Foam Insulation | Our Services",
+    "metaDescription": "We provide top-notch spray foam insulation services for your home or business.",
+    "bannerImage": "/images/spray-foam-banner.jpg",
+    "bannerTitle": "Spray Foam Insulation",
+    "serviceTitle": "Spray Foam Insulation",
+    "serviceDescription": "Spray foam insulation is one of the most effective ways to seal your home and improve energy efficiency.",
+    "additionalInfo": {
+      "title": "Why Choose Spray Foam Insulation?",
+      "description": "Spray foam insulation offers superior thermal resistance and moisture control.",
+      "points": [
+        "Energy-efficient solution",
+        "Reduces energy bills",
+        "Eco-friendly material",
+        "Long-lasting results"
+      ]
+    },
+    "latestWork": {
+      "title": "Recent Projects",
+      "sliderImages": [
+        {
+          "src": "/images/project1.jpg",
+          "alt": "Spray Foam Insulation Project 1"
+        },
+        {
+          "src": "/images/project2.jpg",
+          "alt": "Spray Foam Insulation Project 2"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Home Insulation",
+          "imageSrc": "/images/home-insulation.jpg",
+          "imageAlt": "Home Insulation Project"
+        },
+        {
+          "title": "Commercial Building Insulation",
+          "imageSrc": "/images/commercial-insulation.jpg",
+          "imageAlt": "Commercial Insulation Project"
+        }
+      ]
+    }
+  }
+}

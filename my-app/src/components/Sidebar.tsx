@@ -7,18 +7,21 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image"; // Импортируем Image из next/image
 
 const services = [
-  { name: "Spray Foam Insulation", path: "/spray-foam-insulation" },
-  { name: "Spray Foam Roofing System", path: "/spray-polyurethane-foam" },
-  { name: "Closed-Cell Insulation", path: "/closed-cell-insulation" },
-  { name: "Fiberglass Insulation", path: "/fiberglass-insulation" },
-  { name: "Blown-In Insulation", path: "/blown-insulation" },
+  { name: "Spray Foam Insulation", path: "/services/spray-foam-insulation" },
+  {
+    name: "Spray Foam Roofing System",
+    path: "/services/spray-polyurethane-foam",
+  },
+  { name: "Closed-Cell Insulation", path: "/services/closed-cell-insulation" },
+  { name: "Fiberglass Insulation", path: "/services/fiberglass-insulation" },
+  { name: "Blown-In Insulation", path: "/services/blown-insulation" },
   {
     name: "Soundproofing Insulation",
-    path: "/sound-insulation-by-spraying-foaming-polymers",
+    path: "/services/sound-insulation-by-spraying-foaming-polymers",
   },
-  { name: "Insulation Removal", path: "/foam-insulation-removal" },
-  { name: "Concrete Leveling", path: "/concrete-leveling" },
-  { name: "Polyurea Coating", path: "/polyurea-coating" },
+  { name: "Insulation Removal", path: "/services/foam-insulation-removal" },
+  { name: "Concrete Leveling", path: "/services/concrete-leveling" },
+  { name: "Polyurea Coating", path: "/services/polyurea-coating" },
   { name: "About Us", path: "/about-us" },
 ];
 
