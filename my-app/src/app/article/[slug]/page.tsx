@@ -1,4 +1,4 @@
-"use client";
+// X:\web\General-Construction\admin-article\my-app\src\app\article\[slug]\page.tsx
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -9,7 +9,7 @@ interface Author {
   email: string;
 }
 
-interface Image {
+interface ImageData {
   image_id: number;
   url: string;
   caption: string;
@@ -26,20 +26,16 @@ interface Article {
   meta_description: string;
   author_id: number;
   author: Author;
-  images: Image[];
+  images: ImageData[];
   content: string;
 }
 
 async function fetchArticles(): Promise<Article[]> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
-  console.log("Fetching articles from API:", apiUrl); // Логируем URL для проверки
-
   const response = await fetch(apiUrl);
   if (!response.ok) {
-    console.error("Network response was not ok", response.statusText);
     throw new Error("Network response was not ok");
   }
-
   const data = await response.json();
   return data;
 }
@@ -48,10 +44,10 @@ export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
-  const slug = params.slug as string; // Используем useParams для получения slug
+  const slug = params.slug;
 
   useEffect(() => {
-    if (!slug || typeof slug !== "string") return; // Проверка на наличие slug и его тип
+    if (!slug) return;
 
     const fetchArticle = async () => {
       setLoading(true);
