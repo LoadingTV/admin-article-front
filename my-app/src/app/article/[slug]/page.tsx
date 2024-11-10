@@ -1,4 +1,5 @@
 // X:\web\General-Construction\admin-article\my-app\src\app\article\[slug]\page.tsx
+"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
