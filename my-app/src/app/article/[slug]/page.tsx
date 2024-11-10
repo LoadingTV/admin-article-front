@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
 
 interface Author {
   user_id: number;
@@ -31,12 +31,15 @@ interface Article {
 }
 
 async function fetchArticles(): Promise<Article[]> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
-  );
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
+  console.log("Fetching articles from API:", apiUrl); // Логируем URL для проверки
+
+  const response = await fetch(apiUrl);
   if (!response.ok) {
+    console.error("Network response was not ok", response.statusText);
     throw new Error("Network response was not ok");
   }
+
   const data = await response.json();
   return data;
 }
@@ -44,11 +47,11 @@ async function fetchArticles(): Promise<Article[]> {
 export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const { slug } = router.query; // Получаем значение параметра "slug"
+  const params = useParams();
+  const slug = params.slug as string; // Используем useParams для получения slug
 
   useEffect(() => {
-    if (!slug) return; // Ожидаем, пока slug не станет доступен
+    if (!slug || typeof slug !== "string") return; // Проверка на наличие slug и его тип
 
     const fetchArticle = async () => {
       setLoading(true);
