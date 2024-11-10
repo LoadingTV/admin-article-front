@@ -67,7 +67,7 @@ const BlogArticles: React.FC = () => {
 
                   <div className="div-learn-btn-blog">
                     <a
-                      href={`/blog/${article.slug}`}
+                      href={`/article/${article.slug}`}
                       className="learn-btn-blog"
                     >
                       LEARN MORE
