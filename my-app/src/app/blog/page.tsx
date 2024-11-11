@@ -47,7 +47,8 @@ const BlogArticles: React.FC = () => {
               <div className="div-3">
                 {article.images.length > 0 && (
                   <Image
-                    src={article.images[0].url}
+                    // src={article.images[0].url}
+                    src="/my-app/public/images/pictures/baner_slide_1_1080p.webp"
                     alt={article.images[0].alt_text}
                     width={500}
                     height={200}
