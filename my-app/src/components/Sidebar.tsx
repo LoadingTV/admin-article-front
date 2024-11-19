@@ -84,7 +84,7 @@ const Sidebar: React.FC = () => {
       </div>
       {/* Сайдбар */}
       <aside
-        className={` fixed top-0 left-0 bg-white z-50 shadow-md h-full w-[300px] p-6 bg-gray-800 z-50 ${sidebarBg} z-50 transition-transform transform ${
+        className={` fixed top-0 left-0   shadow-md h-full w-[300px] p-6        ${sidebarBg} z-50 transition-transform transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:block`}
       >
@@ -118,11 +118,11 @@ const Sidebar: React.FC = () => {
           </div>
         </div>
 
-        <nav className="">
+        <nav className={` ${sidebarBg}`}>
           {services.map((service) => (
             <Link href={service.path} key={service.name}>
               <span
-                className={`block px-4 py-2 rounded-lg mb-2 text-black${
+                className={`block ${sidebarBg} px-4 py-2 rounded-lg mb-2  ${
                   pathname === service.path ? activeLink : ""
                 } ${linkHover}`}
               >
@@ -143,7 +143,7 @@ const Sidebar: React.FC = () => {
 
           <Link href="/faq">
             <span
-              className={`block px-4 py-2 rounded-lg mb-2 text-black${
+              className={`block px-4 py-2 rounded-lg mb-2 ${sidebarBg} ${
                 pathname === "/faq" ? activeLink : ""
               } ${linkHover}`}
             >
@@ -217,7 +217,7 @@ const Sidebar: React.FC = () => {
 
         <div className="mt-8">
           {/* Контакты */}
-          <button className="block w-full py-2 text-center font-semibold border rounded-lg">
+          <button className="get-quote-btn3 get-quote-btn3-blog light-18">
             GET A QUOTE
           </button>
           <p className="text-sm mt-4">(855) 566-5340</p>

@@ -66,8 +66,8 @@ export default function ArticlePage() {
     fetchArticle();
   }, [slug]);
 
-  if (loading) return <p>Загрузка...</p>;
-  if (!article) return <p>Статья не найдена.</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!article) return <p>Article not founded</p>;
 
   return (
     <div className="w-full">
@@ -83,7 +83,7 @@ export default function ArticlePage() {
             />
           ) : (
             <div className="h-full bg-gray-200 flex items-center justify-center">
-              <p>Изображение отсутствует.</p>
+              <p>No image today</p>
             </div>
           )}
           <div className="text-center text-white p-4">
