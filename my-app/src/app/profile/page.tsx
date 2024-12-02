@@ -24,7 +24,7 @@ const ProfilePage: React.FC = () => {
     setLoading(true); // Устанавливаем состояние загрузки
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
+        `${process.env.NEXT_PUBLIC_API_URL}/articles`
       );
       const text = await response.text();
 

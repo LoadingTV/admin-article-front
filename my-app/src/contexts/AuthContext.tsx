@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (access_token) {
         console.log("Токен найден, отправка запроса на проверку...");
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
           {
             headers: { Authorization: `Bearer ${access_token}` },
           }
@@ -99,7 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log("Попытка входа с email:", email);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -126,14 +126,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const register = async (userData: RegisterData) => {
     const { name, surname, email, password } = userData;
     console.log("Попытка регистрации с данными:", userData);
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, surname, email, password }),
-      }
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, surname, email, password }),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -160,7 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateProfile = async (userData: UpdateProfileData) => {
     console.log("Обновление профиля с данными:", userData);
     const response = await fetchWithAuth(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`,
+      `${process.env.NEXT_PUBLIC_API_URL}/users/profile`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

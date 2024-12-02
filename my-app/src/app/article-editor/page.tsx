@@ -41,7 +41,7 @@ const ArticleEditor: React.FC = () => {
     const fetchUser = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+          `${process.env.NEXT_PUBLIC_API_URL}/user`,
           {
             credentials: "include",
           }
@@ -95,7 +95,7 @@ const ArticleEditor: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/articles`,
+        `${process.env.NEXT_PUBLIC_API_URL}/articles`,
         {
           method: "POST",
           body: formData,

@@ -32,7 +32,7 @@ interface Article {
 }
 
 async function fetchArticles(): Promise<Article[]> {
-  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/articles`;
   const response = await fetch(apiUrl);
   if (!response.ok) {
     throw new Error("Network response was not ok");
